@@ -1,6 +1,16 @@
 var tA;
 var tB;
 var eventsArray = [];
+var selectedObject ={
+  title:"",
+              description:"",
+              position:"",
+                start:"",
+                end:"",
+                allDay:""
+              };
+var start1,end1,allday1;
+
 
 $(function(){
     // 外部事件可拖拉
@@ -16,32 +26,18 @@ $(function(){
       console.log(eventsArray);
     });
 
-    // 更改 selected event 顏色
-    $('.color-btn').click(function(){
-      var tmpColor = $(this).css('background-color');
-      $('#selected-event').css({'background-color': tmpColor, 'border-color': tmpColor});
-    })
-
-    // 自訂顏色
-    $('#color-picker').change(function(){
-      var tmpColor = $(this).val();
-      $('#selected-event').css({'background-color': tmpColor, 'border-color': tmpColor});
-      });
 
     // 使用者輸入完後 按下添加
     $('#add-new-event').click(addEvent);
 
     // 使用者輸入完後 按下 Enter 可視為執行添加
-    $("#new-event-title,#new-event-description,#new-event-position").on('keyup', function (e) {
+   /* $("#new-event-title,#new-event-description,#new-event-position").on('keyup', function (e) {
         if (e.keyCode == 13) {
             addEvent();
         }
     });
-
-    //綁定地址輸入框的keyup事件以即時重新定位
-    $("#new-event-position").bind("keyup",function(){ 
-      GetAddressMarker();
-    }); 
+*/
+  
 })
 
 function initCalendar()
@@ -73,12 +69,10 @@ function initCalendar()
 				title: $(this).text(),
 	            description: $(this).data('description'),
 	            position: $(this).data('position'),
-				latitude: $(this).data('latitude'),
-				longitude: $(this).data('longitude'),
+				
 	            start: date,
 	            allDay: !date.hasTime(),
-	            backgroundColor: $(this).css('background-color'),
-	            borderColor: $(this).css('border-color')
+	            
 			}
         	console.log(event);
     		if (event.allDay != true)
@@ -94,22 +88,29 @@ function initCalendar()
 			$('#calendar').fullCalendar('renderEvent', event, true);
         	setEventsArray();
         },
-        select: function(start, end) {
-      	    var selectedObject = {
+        select: function(start, end) 
+        {
+       
+            start1=start.format('YYYY-MM-DD HH:mm:ss');
+            end1=end.format('YYYY-MM-DD HH:mm:ss');
+            allday1=!start.hasTime() && !end.hasTime();
+          
+
+             //allday=!start.hasTime() && !end.hasTime();
+      	     /*selectedObject = 
+             {
   	      	    title: $('#selected-event').text(),
 	            description: $('#selected-event').data('description'),
 	            position: $('#selected-event').data('position'),
-				latitude: $('#selected-event').data('latitude'),
-				longitude: $('#selected-event').data('longitude'),
+			
   	      	    start: start.format('YYYY-MM-DD HH:mm:ss'),
   	      	    end: end.format('YYYY-MM-DD HH:mm:ss'),
-  	      	    allDay: !start.hasTime() && !end.hasTime(),
-  	      	    backgroundColor: $('#selected-event').css('background-color'),
-  	      	    borderColor:  $('#selected-event').css('border-color')
-      	    }
-      	    $('#calendar').fullCalendar('renderEvent', selectedObject, true);
-      	    $('#calendar').fullCalendar('unselect');
-        	setEventsArray();
+  	      	    allDay: !start.hasTime() && !end.hasTime()
+  	      
+      	    }*/
+      	    //$('#calendar').fullCalendar('renderEvent', selectedObject, true);
+      	    //$('#calendar').fullCalendar('unselect');
+        	//setEventsArray();
       	},
       	eventDrop: function(event, delta, revertFunc) {
   	    	// 若沒有end且不是allday，預設為開始時間 +2 小時
@@ -146,12 +147,35 @@ function addEvent(){
 	console.log($('#new-event-description').val());
 	console.log($('#new-event-position').val());
 
+selectedObject = 
+             {
+                title: $('#new-event-title').val(),
+                description: $('#new-event-description').val(),
+                position: $('#new-event-position').val(),
+      
+                //start: start.format('YYYY-MM-DD HH:mm:ss'),
+                //end: end.format('YYYY-MM-DD HH:mm:ss'),
+                start:start1,
+                end:end1,
+                allDay:allday1
+              
+            }
+
+             //alert(selectedObject.title);
+
+            $('#calendar').fullCalendar('renderEvent', selectedObject, true);
+            $('#calendar').fullCalendar('unselect');
+          setEventsArray();
+
+
+/*
 	$('#selected-event').text($('#new-event-title').val());
 	$('#selected-event').data('description', $('#new-event-description').val());
 	$('#selected-event').data('position', $('#new-event-position').val());
-	$('#selected-event').data('latitude', LatLng.lat());
-	$('#selected-event').data('longitude', LatLng.lng());
-	$('#new-event-title,#new-event-description,#new-event-position').val('');
+	
+	$('#new-event-title,#new-event-description,#new-event-position').val('');*/
+
+            
 }
 
 // 輸入兩個 time, 若 timeA 較大則回傳 true，否則回傳 false
